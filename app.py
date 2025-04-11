@@ -28,7 +28,13 @@ def download_model():
         r = requests.get(url)
         with open(MODEL_PATH, "wb") as f:
             f.write(r.content)
+
+        # ✅ Validation
+        if os.path.getsize(MODEL_PATH) < 1000000:  # 1 MB check
+            raise ValueError("❌ Downloaded file is too small — likely a blocked or invalid Google Drive link.")
+
         st.success("✅ Model downloaded.")
+
 
 @st.cache_resource
 def load_model():
