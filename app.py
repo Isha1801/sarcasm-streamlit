@@ -39,8 +39,9 @@ def download_model():
 def load_model():
     try:
         download_model()  # Just downloads and stores model files, skip if already uploaded
-        model = TFBertForSequenceClassification.from_pretrained(MODEL_DIR)
-        tokenizer = BertTokenizer.from_pretrained(MODEL_DIR)
+        model = TFBertForSequenceClassification.from_pretrained("model")
+        tokenizer = BertTokenizer.from_pretrained("model")
+
         st.success("✅ Model loaded from pretrained folder.")
         return tokenizer, model
     except Exception as e:
