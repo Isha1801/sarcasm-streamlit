@@ -8,10 +8,9 @@ import re
 
 MODEL_DIR = "model"
 MODEL_PATH = os.path.join(MODEL_DIR, "tf_model.h5")
-
 SHARE_URL = "https://drive.google.com/file/d/15cLCBxGKXVhkYQQA70Pj5eZC_ozvjsCJ/view?usp=sharing"
 
-# Download from Drive
+# Download model from Google Drive if not present
 def extract_drive_id(url):
     match = re.search(r"/d/([a-zA-Z0-9_-]+)", url)
     return match.group(1) if match else None
@@ -33,8 +32,34 @@ def download_model():
 
 @st.cache_resource
 def load_model():
-    download_model()
-    tokenizer = BertTokenizer.from_pretrained("model")
-    model = TFBertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
-    model.load_weights(MODEL_PATH)
-    return tokenizer,
+    try:
+        download_model()
+        tokenizer = BertTokenizer.from_pretrained("model")
+        model = TFBertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
+        model.load_weights(MODEL_PATH)
+        return tokenizer, model
+    except Exception as e:
+        st.error(f"❌ Failed to load model: {e}")
+        return None, None
+
+# ========== UI ==========
+
+st.title("🗣️ Sarcasm Detection App")
+
+user_input = st.text_area("Enter a sentence you want to check for sarcasm:")
+
+if st.button("Predict"):
+    if user_input.strip():
+        tokenizer, model = load_model()
+        if model is None:
+            st.error("🚫 Model failed to load.")
+        else:
+            inputs = tokenizer(user_input, padding='max_length', truncation=True, max_length=64, return_tensors="tf")
+            outputs = model(inputs, training=False).logits
+            prob = tf.nn.softmax(outputs, axis=1)
+            prediction = np.argmax(prob)
+
+            result = "Sarcastic 😏" if prediction == 1 else "Not Sarcastic 🙂"
+            st.success(f"Prediction: **{result}**")
+    else:
+        st.warning("⚠️ Please enter a sentence to predict.")
