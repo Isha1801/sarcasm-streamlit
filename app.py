@@ -48,6 +48,7 @@ def load_model():
         tokenizer = BertTokenizer.from_pretrained("model")
         model = TFBertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
         model.load_weights(MODEL_PATH)
+        st.success("✅ Model weights loaded.")
         return tokenizer, model
     except Exception as e:
         st.error(f"❌ Failed to load model: {e}")
