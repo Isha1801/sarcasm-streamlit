@@ -42,15 +42,15 @@ def download_model():
 @st.cache_resource
 def load_model():
     try:
-        download_model()  # Just downloads and stores model files, skip if already uploaded
-        model = TFBertForSequenceClassification.from_pretrained("model")
+        download_model()
+        model = TFBertForSequenceClassification.from_pretrained("model", from_pt=False)
         tokenizer = BertTokenizer.from_pretrained("model")
-
-        st.success("✅ Model loaded from pretrained folder.")
+        st.success("✅ Model loaded successfully!")
         return tokenizer, model
     except Exception as e:
         st.error(f"❌ Failed to load model: {e}")
         return None, None
+
 
 
 # ========== UI ==========
