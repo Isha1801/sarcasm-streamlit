@@ -8,7 +8,7 @@ import re
 
 MODEL_DIR = "model"
 MODEL_PATH = os.path.join(MODEL_DIR, "tf_model.h5")
-SHARE_URL = "https://drive.google.com/file/d/15cLCBxGKXVhkYQQA70Pj5eZC_ozvjsCJ/view?usp=sharing"
+SHARE_URL = "https://drive.google.com/file/d/1F2D6WOVMyR3SYnMXZ_Wg7oYb5MhRTAMu/view?usp=sharing"
 
 # Download model from Google Drive if not present
 def extract_drive_id(url):
