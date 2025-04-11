@@ -45,9 +45,9 @@ def download_model():
 def load_model():
     try:
         download_model()
-        tokenizer = BertTokenizer.from_pretrained("model")
-        model = TFBertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
-        model.load_weights(MODEL_PATH)
+        model = TFBertForSequenceClassification.from_pretrained(MODEL_DIR)
+        tokenizer = BertTokenizer.from_pretrained(MODEL_DIR)
+
         st.success("✅ Model weights loaded.")
         return tokenizer, model
     except Exception as e:
