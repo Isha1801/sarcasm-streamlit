@@ -22,18 +22,23 @@ def get_direct_download_url(share_url):
 def download_model():
     if not os.path.exists(MODEL_DIR):
         os.makedirs(MODEL_DIR)
+
     if not os.path.exists(MODEL_PATH):
         st.info("📥 Downloading model weights...")
-        url = get_direct_download_url(SHARE_URL)
-        r = requests.get(url)
-        with open(MODEL_PATH, "wb") as f:
-            f.write(r.content)
+        try:
+            response = requests.get(SHARE_URL, allow_redirects=True, headers={"User-Agent": "Mozilla/5.0"})
+            if response.status_code == 200:
+                with open(MODEL_PATH, "wb") as f:
+                    f.write(response.content)
 
-        # ✅ Validation
-        if os.path.getsize(MODEL_PATH) < 1000000:  # 1 MB check
-            raise ValueError("❌ Downloaded file is too small — likely a blocked or invalid Google Drive link.")
+                if os.path.getsize(MODEL_PATH) < 1000000:
+                    raise ValueError("❌ Model file too small. Dropbox may have returned HTML instead of the file.")
+                st.success("✅ Model downloaded successfully.")
+            else:
+                st.error(f"❌ Dropbox link failed with status code: {response.status_code}")
+        except Exception as e:
+            st.error(f"❌ Error downloading model: {e}")
 
-        st.success("✅ Model downloaded.")
 
 
 @st.cache_resource
