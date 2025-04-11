@@ -5,10 +5,12 @@ import numpy as np
 import os
 import requests
 import re
+import zipfile
+import io
 
 MODEL_DIR = "model"
 MODEL_PATH = os.path.join(MODEL_DIR, "tf_model.h5")
-SHARE_URL = "hhttps://www.dropbox.com/scl/fi/7s8cepv30f5qgtb77itoc/model.zip?rlkey=p2mb6v8jn54ll1l2pa2tle8yu&st=lp42aq6q&dl=1"
+SHARE_URL = "https://www.dropbox.com/scl/fi/7s8cepv30f5qgtb77itoc/model.zip?rlkey=p2mb6v8jn54ll1l2pa2tle8yu&st=vtvu5yhw&dl=1"
 
 # Download model from Google Drive if not present
 def extract_drive_id(url):
@@ -18,6 +20,7 @@ def extract_drive_id(url):
 def get_direct_download_url(share_url):
     file_id = extract_drive_id(share_url)
     return f"https://drive.google.com/uc?export=download&id={file_id}"
+
 
 def download_model():
     if not os.path.exists(MODEL_DIR):
@@ -32,6 +35,7 @@ def download_model():
             st.success("✅ Model unzipped and ready!")
         except Exception as e:
             st.error(f"❌ Failed to unzip model: {e}")
+
 
 
 
